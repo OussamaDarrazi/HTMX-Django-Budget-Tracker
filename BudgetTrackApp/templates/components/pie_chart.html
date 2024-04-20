@@ -1,0 +1,3 @@
+<div id="pie_chart" hx-post="{% url 'display_pie_chart' %}" hx-trigger="display-stats from:body" hx-swap="outerHTML" hx-headers='{"X-CSRFToken":"{{csrf_token}}"}' >
+    {{pie_chart_div|safe}} {{pie_chart_script|safe}}</div>
+    </div>

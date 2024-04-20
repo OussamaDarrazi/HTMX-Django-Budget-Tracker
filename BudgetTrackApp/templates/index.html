@@ -1,0 +1,274 @@
+{% extends 'base.html'%} {% block title %}Budget Tracker {%endblock %} {% load static %} {% block body %}
+<style>
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+  }
+
+  .main {
+    position: relative;
+    width: 70%;
+    min-width: 1000px;
+    height: 80%;
+    min-height: 500px;
+    /* padding: 2rem; */
+    border: 2px solid black;
+    background-color: white;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.37);
+    display: flex;
+  }
+  .exp_bar {
+    box-sizing: border-box;
+    padding-block: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    gap: 2rem;
+    width: 35%;
+    max-width: 20rem;
+    height: 100%;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.37);
+    overflow: auto;
+  }
+
+  .exp_card {
+    position: relative;
+    border: 1px solid black;
+    padding: 0.5rem 1rem;
+    background-color: white;
+    width: 80%;
+    height: fit-content;
+    /* box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1); */
+    transition: all 500ms ease-in-out;
+    transition-property: box-shadow;
+  }
+  .exp_card:hover,
+  .exp_card:has(#expense_form),
+  #stats > div:hover {
+    /* border: 2px solid black; */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.37);
+  }
+  .exp_add {
+    z-index: 2024;
+    box-sizing: border-box;
+    border-radius: 100vmax ;
+    width: 3rem;
+    aspect-ratio: 1;
+    background-color: var(--red);
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border: none;
+    /* opacity: .8; */
+    transition: opacity 300ms ease-in-out;
+    &:active {
+    border: 2px solid black;
+  }
+  }
+  .daily_cont {
+    opacity: 1;
+    position: relative;
+    width: 100%;
+  }
+  /* .daily_cont::before{
+    content: "";
+    background-image: url("{% static 'img/composition_bg_image.png' %}");
+    background-size: 100% auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 1;
+  } */
+  .daily_cont > * {
+    position: relative;
+  }
+
+  #stats {
+    height: 40%;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  #stats > div {
+    padding: 0.5rem;
+    background-color: white;
+    max-height: 8rem;
+    width: 22%;
+    border: 1px solid black;
+    transition: all 500ms ease-in-out;
+    transition-property: box-shadow;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.17);
+  }
+  #charts {
+    height: 60%;
+    display: flex;
+    flex-direction: row;
+  }
+  #line_chart {
+    width: 60%;
+    height: 100%;
+  }
+  #pie_chart {
+    width: 40%;
+    height: 100%;
+  }
+
+  .subscript {
+    font-size: 0.8rem;
+  }
+  .amt,
+  .currency {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  #expense_form > input,
+  select,
+  textarea {
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  #logout{
+    aspect-ratio: 1;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--red);
+    border-radius: 100vmax;
+  }
+
+
+  .delete-card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    height: 1rem;
+    aspect-ratio: 1;
+    background-color: var(--red);
+    color: white;
+    opacity: 0;
+    visibility: hidden;
+    border: none;
+    cursor: pointer;
+    transition: opacity 300ms ease-in-out;
+  }
+
+  .exp_card:hover .delete-card{
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* https://css-loaders.com/factory/ */
+  .loader {
+  width: 90px;
+  height: 14px;
+  box-shadow: 0 3px 0 var(--blue);
+  display: grid;
+}
+.loader:before,
+.loader:after{
+  content: "";
+  grid-area: 1/1;
+  background: radial-gradient(circle closest-side,var(--c,var(--red)) 92%,#0000) 0 0/calc(100%/4) 100%;
+  animation: l4 1s infinite linear;
+}
+.loader:after{
+  --c: var(--yellow); 
+  background-color: var(--blue);
+  box-shadow: 0 -2px 0 0 var(--blue);
+  clip-path: inset(-2px calc(50% - 10px));
+}
+@keyframes l4 {
+    100% {background-position: calc(100%/3) 0}
+}
+</style>
+{% include 'utils/background_mozaic.html' %}
+
+<div class="main">
+  <div class="daily_cont">
+    {% include 'components/stats.html' with starting_budget=starting_budget current_expenditure=current_expenditure  remaining=remaining best_remaining=best_remaining current_month_expenditure=current_month_expenditure best_month_expenditure=best_month_expenditure%}
+    <div id="charts">
+      {% include 'components/line_chart.html' with line_chart_div=line_chart_div line_chart_script=line_chart_script %}
+      {% include 'components/pie_chart.html' with pie_chart_div=pie_chart_div pie_chart_script=pie_chart_script %}
+  </div>
+  <div class="exp_bar">
+    <button
+      class="exp_add"
+      hx-get="{% url 'add_expense' %}"
+      hx-target=".exp_bar"
+      hx-swap="afterbegin scroll:top"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        version="1.1"
+        width="30%"
+        height="30%"
+        viewBox="0 0 256 256"
+        xml:space="preserve"
+      >
+        <defs></defs>
+        <g
+          style="
+            stroke: none;
+            stroke-width: 10;
+            stroke-dasharray: none;
+            stroke-linecap: butt;
+            stroke-linejoin: miter;
+            stroke-miterlimit: 10;
+            fill: none;
+            fill-rule: nonzero;
+            opacity: 1;
+          "
+          transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"
+        >
+          <path
+            d="M 86.5 41.5 h -38 v -38 C 48.5 1.567 46.933 0 45 0 c -1.933 0 -3.5 1.567 -3.5 3.5 v 38 h -38 C 1.567 41.5 0 43.067 0 45 s 1.567 3.5 3.5 3.5 h 38 v 38 c 0 1.933 1.567 3.5 3.5 3.5 c 1.933 0 3.5 -1.567 3.5 -3.5 v -38 h 38 c 1.933 0 3.5 -1.567 3.5 -3.5 S 88.433 41.5 86.5 41.5 z"
+            style="
+              stroke-width: 10px;
+              stroke-dasharray: none;
+              stroke-linecap: butt;
+              stroke-linejoin: miter;
+              stroke-miterlimit: 10;
+              fill: white;
+              fill-rule: nonzero;
+              opacity: 1;
+            "
+            transform=" matrix(1 0 0 1 0 0) "
+            stroke-linecap="round"
+          />
+        </g>
+      </svg>
+    </button>
+
+    {% include 'components/expense_card_list.html' with expenses=expenses%}
+    <div class="htmx-indicator" class="loader" id="loader"></div>
+  </div>
+</div>
+<div id="logout"><a href="{% url 'Logout' %}"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#ffffff" height="1rem" width="1rem" version="1.1" id="Capa_1" viewBox="0 0 198.715 198.715" xml:space="preserve">
+  <g>
+    <path d="M161.463,48.763c-2.929-2.929-7.677-2.929-10.607,0c-2.929,2.929-2.929,7.677,0,10.606   c13.763,13.763,21.342,32.062,21.342,51.526c0,19.463-7.579,37.761-21.342,51.523c-14.203,14.204-32.857,21.305-51.516,21.303   c-18.659-0.001-37.322-7.104-51.527-21.309c-28.405-28.405-28.402-74.625,0.005-103.032c2.929-2.929,2.929-7.678,0-10.606   c-2.929-2.929-7.677-2.929-10.607,0C2.956,83.029,2.953,138.766,37.206,173.019c17.132,17.132,39.632,25.697,62.135,25.696   c22.497-0.001,44.997-8.564,62.123-25.69c16.595-16.594,25.734-38.659,25.734-62.129C187.199,87.425,178.059,65.359,161.463,48.763   z"/>
+    <path d="M99.332,97.164c4.143,0,7.5-3.358,7.5-7.5V7.5c0-4.142-3.357-7.5-7.5-7.5s-7.5,3.358-7.5,7.5v82.164   C91.832,93.807,95.189,97.164,99.332,97.164z"/>
+  </g>
+  </svg></a></div>
+
+
+
+{% endblock %}

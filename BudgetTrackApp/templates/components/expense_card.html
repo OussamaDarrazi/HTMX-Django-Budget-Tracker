@@ -1,0 +1,24 @@
+<div class="exp_card" 
+{% if reveals %}
+hx-post="{% url 'get_expenses' date_time=expense.date_time %}" 
+hx-trigger="intersect once" 
+hx-swap="afterend" 
+hx-headers='{"X-CSRFToken":"{{csrf_token}}"}'
+{% endif %}
+>
+    {% if expense %}
+    <button class="delete-card" hx-post="{% url 'delete_expense' expense_id=expense.id %}" hx-swap="delete" hx-target="closest .exp_card" hx-headers='{"X-CSRFToken":"{{csrf_token}}"}'>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" width="1rem" height="1rem" viewBox="0 0 50 50">
+        <path d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z"></path>
+        </svg>
+       </button>
+    You have spent <strong><em>{{ expense.amount }}</em></strong> <strong><em>{{user.profile.currency}}</em></strong>
+    on <strong><em>{{ expense.title }}</em></strong> using <strong><em>{{ expense.payment_method.title }}</em></strong> <br>
+    Notes: <br>
+      {{ expense.note }}<br>
+      
+    <font size="0">{{ expense.date_time }}</font>
+    {% else %}
+    {% include 'components/expense_form.html' %}
+    {% endif %}
+</div>

@@ -1,0 +1,32 @@
+<div id="stats" hx-post="{% url 'display_stats' %}" hx-trigger="display-stats from:body" hx-swap="outerHTML" hx-headers='{"X-CSRFToken":"{{csrf_token}}"}'>
+    <div id="budget_card">
+      Today's Starting Budget <br />
+      <span class="amt" hx-get="{% url 'edit_budget'%}" hx-trigger="dblclick">
+        {{ starting_budget |floatformat:2}}
+      </span>
+      <span class="currency">{{user.profile.currency}}</span>
+    </div>
+    <div id="expenditure_card">
+      Current Expenditure <br />
+      <span class="amt">{{ current_expenditure|floatformat:2 }}</span>
+      <span class="currency">{{user.profile.currency}}</span>
+    </div>
+    <div id="remaining_card">
+      Remaining <br />
+      <span class="amt">{{ remaining|floatformat:2 }}</span>
+      <span class="currency">{{user.profile.currency}}</span>
+      <br />
+      <span class="subscript">Best Remaining</span> <br />
+      {{best_remaining|floatformat:2}}
+      {{user.profile.currency}}
+    </div>
+    <div id="month_expenditure_card">
+      Month's Expenditure <br />
+      <span class="amt">{{ current_month_expenditure |floatformat:2}} </span
+      ><span class="currency">{{user.profile.currency}}</span> <br /><span
+        class="subscript"
+        >Best Monthly Expenditure</span
+      ><br />
+      {{best_month_expenditure|floatformat:2}} {{user.profile.currency}}
+    </div>
+  </div>

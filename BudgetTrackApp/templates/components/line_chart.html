@@ -1,0 +1,3 @@
+<div id="line_chart" hx-post="{% url 'display_line_chart' %}" hx-trigger="display-stats from:body" hx-swap="outerHTML" hx-indicator="#loader" hx-headers='{"X-CSRFToken":"{{csrf_token}}"}'>
+    {{line_chart_div|safe}} {{line_chart_script|safe}}
+  </div>

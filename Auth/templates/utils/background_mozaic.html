@@ -1,0 +1,38 @@
+<div id="tiles-container"></div>
+
+<style>
+    #tiles-container {
+        display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            overflow: hidden;
+            z-index:-2024;
+            position:fixed;
+            opacity:.1;
+    }
+    .tile{
+        aspect-ratio: 1;
+        transition: all 5s ease-in-out;
+    }
+</style>
+<script>
+    let colors = [ "#ffde17", "#21409a", "#be1e2d"];
+    for(let i = 0; i<2000; i++){
+        var tile = document.createElement("div");
+        tile.className = "tile";
+        tile.style.width = (window.innerWidth / 8) + "px";
+        var randomColor = colors[Math.floor(Math.random() * colors.length)];
+        tile.style.backgroundColor = randomColor;
+        document.getElementById("tiles-container").appendChild(tile);
+    }
+    setTimeout(function () {
+            var tiles = document.querySelectorAll(".tile");
+            tiles.forEach(tile => {
+                tile.style.borderTopLeftRadius = Math.random() < 0.5 ? "0" : "100vmax";
+                tile.style.borderTopRightRadius = Math.random() < 0.5 ? "0" : "100vmax";
+                tile.style.borderBottomRightRadius = Math.random() < 0.5 ? "0" : "100vmax";
+                tile.style.borderBottomLeftRadius = Math.random() < 0.5 ? "0" : "100vmax";
+                
+            });
+        }, 200);
+
+</script>

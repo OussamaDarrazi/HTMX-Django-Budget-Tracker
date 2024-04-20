@@ -1,0 +1,33 @@
+<form id="expense_form" method="post" hx-swap="outerHTML" hx-target="closest .exp_card" hx-post="
+{% if expense_id%}
+/edit_expense/{{expense_id}}
+{% else %}
+/save_expense
+{% endif %}
+"
+>
+{% csrf_token %}
+        <label for="expense_title">Title:</label><br>
+        <input class="input-field"  type="text" id="expense_title" name="expense_title" required><br><br>
+        
+        <label for="expense_amount">Amount:</label><br>
+        <input class="input-field" type="number" id="expense_amount" name="expense_amount" min="0" step="0.01" required><br><br>
+        
+        <label for="expense_date_time">Date and Time:</label><br>
+        <input class="input-field"  type="datetime-local" id="expense_date_time" name="expense_date_time" value='{{ my_date_variable }}'
+        required><br><br>
+        
+        <label for="expense_note">Note:</label><br>
+        <textarea class="input-field"  id="expense_note" name="expense_note" rows="1"></textarea><br><br>
+        
+        <label for="expense_payment_method">Payment Method:</label><br>
+        <select class="input-field" id="expense_payment_method" name="expense_payment_method">
+            {% for payment_method in user.profile.payment_methods.all %}
+            <option value="{{ payment_method.id }}">{{ payment_method.title }}</option>
+            
+        {% endfor %}
+        </select><br><br>
+        
+        <input class="button-primary"  type="submit" value="Save Expense">
+        <button class="button-secondary" hx-get="{% url 'deletion_view' %}" hx-swap="delete" hx-target="closest .exp_card">Cancel</button>
+    </form>

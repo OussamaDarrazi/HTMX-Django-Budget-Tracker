@@ -1,0 +1,129 @@
+{% extends 'base.html'%} {% block title %}Budget Tracker - Authenticate
+{%endblock %} {% block body %}
+<style>
+  
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+  }
+
+  .auth-container {
+    position: relative;
+    width: 50%;
+    height: auto;
+    /* padding: 2rem; */
+    border: 2px solid black;
+    background-color: white;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.37);
+    display: flex;
+  }
+
+  .auth-overlay {
+    position: relative;
+    background-color: var(--yellow);
+    height: 100%;
+    width: 50%;
+    z-index: 10;
+    position: absolute;
+    left: 0%;
+    transition: all 500ms ease-in-out;
+    transition-property: left, border-radius;
+    border-radius: 0 0 5rem 0;
+  }
+  .auth-overlay.right {
+    left: 50%;
+    border-radius: 5rem 0 0 0;
+  }
+  .overlay-text {
+    white-space: nowrap;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, calc(-50% + 1em));
+    opacity: 0;
+    transition: all 300ms ease-in-out;
+  }
+  .overlay-text.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    transition: all 300ms ease-in-out;
+  }
+  .auth-form-container {
+    padding: 1rem;
+    height: 100%;
+    width: 50%;
+    opacity: 1;
+    transition: opacity 300ms ease-in-out;
+  }
+  .auth-form-container.hidden {
+    opacity: 0;
+  }
+  span {
+    user-select: none;
+  }
+  span:hover {
+    color: white;
+    background-color: var(--blue);
+    cursor: pointer;
+  }
+  
+</style>
+{% include 'utils/background_mozaic.html' %}
+<div class="auth-container">
+  <div class="auth-form-container">
+    <form method="post">
+      <h1>Log In</h1>
+      <p id="errors">{% if login_form_errors %} {%endif%}</p>
+      {% csrf_token %}
+      <input class="input-field" type="text" name="username" placeholder="username" /><br />
+      <input class="input-field" type="password" name="password" placeholder="password" /><br />
+      <button class="button-primary" type="submit" name="login-form" value="lin">Login</button>
+      or <span>Sign up</span>
+    </form>
+  </div>
+  <div class="auth-overlay right">
+    <h2 class="overlay-text visible" >Welcome again, Friend!</h2>
+    <h2 class="overlay-text" >Welcome, Friend!</h2>
+  </div>
+  <div class="auth-form-container hidden">
+    <form method="post">
+      <h1>Sign Up</h1>
+      {% csrf_token %}
+      <input class="input-field" type="text" name="username" placeholder="username" /><br />
+      <input class="input-field" type="text" name="firstname" placeholder="first name" /><br />
+      <input class="input-field" type="text" name="lastname" placeholder="last name" /><br />
+      <input class="input-field" type="email" name="email" placeholder="email" /><br />
+      <input class="input-field" type="password" name="password1" placeholder="password" /><br />
+      <input class="input-field"
+        type="password"
+        name="password2"
+        placeholder="confirm password"
+      /><br />
+      <button class="button-primary" type="submit" name="signup-form" value="sup">Sign Up</button>
+      or <span>Log in</span>
+    </form>
+  </div>
+</div>
+
+<script>
+  var ps = document.querySelectorAll("span");
+  ps.forEach(function (p) {
+    p.addEventListener("click", function () {
+      var overlay = document.querySelector(".auth-overlay");
+      var overlay_texts = document.querySelectorAll(".overlay-text");
+      var form_containers = document.querySelectorAll(".auth-form-container");
+      overlay.classList.toggle("right");
+      form_containers.forEach(function (f) {
+        f.classList.toggle("hidden");
+      });
+      overlay_texts.forEach(function (t) {
+        t.classList.toggle("visible");
+      });
+    });
+  });
+</script>
+{% endblock %}

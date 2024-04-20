@@ -1,0 +1,8 @@
+{% for expense in latest_expenses %}
+
+{% if not forloop.last %}
+{% include 'components/expense_card.html' with expense=expense%}
+{% else %}
+{% include 'components/expense_card.html' with expense=expense reveals=True%}
+{% endif %}
+{% endfor %}
